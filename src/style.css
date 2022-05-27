@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: Fantera;
+    src: url('./fantera.otf') format('opentype');
+}
+
+.mensergerjeniet {
+    font-family: Fantera;
+    font-size: 4em;
+}
+
+.perspective {
+    transform:
+            scale(0.7)
+            perspective(80em)
+            rotateX(51deg)
+            rotateZ(-3deg);
+    transform-style: preserve-3d;
+}
+
+.pawn {
+    transition: transform 200ms;
+}
+
+.pawn:hover {
+    cursor: pointer;
+    stroke-width: 1;
+}
+
+.pawn-g:hover {
+    fill: #0ee672;
+}
+.pawn-r:hover {
+    fill: #ff0900;
+}
+.pawn-b:hover {
+    fill: #14c4ff;
+}
+.pawn-y:hover {
+    fill: #ffdd00;
+}
