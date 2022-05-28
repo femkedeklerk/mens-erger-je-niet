@@ -8,3 +8,8 @@
 
 ### Preview
 Open index.html file in browser
+
+### Project team
+- Amy
+- Teun
+- Femke
