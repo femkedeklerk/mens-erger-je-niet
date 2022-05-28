@@ -290,7 +290,7 @@ function play() {
     doStep();
     setTimeout(() => {
         play();
-    }, 200);
+    }, 300);
 }
 
 function doStep() {
