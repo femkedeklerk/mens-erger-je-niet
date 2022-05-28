@@ -654,7 +654,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 .pawn:hover {
   cursor: pointer;
   stroke-width: 1;
-  /*transform: rotate(-10deg);*/
 }
 
 .pawn:hover g {
@@ -704,8 +703,6 @@ Ensure the default browser behavior of the `hidden` attribute.
   width: 100px;
   height: 100px;
   border: 1px solid #e5e5e5;
-  /*text-align: center;*/
-  /*line-height: 2em;*/
 }
 
 .side:nth-child(1) {
