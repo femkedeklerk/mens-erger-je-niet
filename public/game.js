@@ -114,6 +114,8 @@ const pawns = {
 
 const boardSvg = document.getElementById('board');
 
+let dice = 0;
+
 createBoard();
 addPawns();
 
@@ -208,6 +210,9 @@ function addPawns() {
         boardSvg.appendChild(group);
         pawn.o = group;
         positions[pawn.p].p = key;
+        group.addEventListener('click', () => {
+            clickPawn(key);
+        });
     }
 }
 
@@ -290,7 +295,7 @@ function play() {
     doStep();
     setTimeout(() => {
         play();
-    }, 300);
+    }, 100);
 }
 
 function doStep() {
@@ -326,10 +331,7 @@ function doStep() {
     console.log(color.toUpperCase() + ' throws: ' + steps + ' no moves possible');
 }
 
-let count = 0;
-
 document.getElementById('dicebtn').addEventListener('click', (e) => {
-    count = 0;
     e.currentTarget.setAttribute('disabled', 'disabled');
     rollDice();
 });
@@ -337,20 +339,29 @@ document.getElementById('dicebtn').addEventListener('click', (e) => {
 document.getElementById('dice').addEventListener('thrown', (e) => {
     console.log(e.value);
     document.getElementById('dicebtn').removeAttribute('disabled');
-    movePawn('y1', e.value);
+    // movePawn('y1', e.value);
 });
 
 function rollDice() {
     const number = Math.floor((Math.random() * 6) + 1);
-    document.getElementById('dice').setAttribute('class', 'dice show-' + String(number));
-    if (count++ <= 3) {
-        setTimeout(rollDice,200);
-    } else {
-        setTimeout(() => {
-            const event = new Event('thrown');
-            event.value = number;
-            document.getElementById('dice').dispatchEvent(event);
-        }, 500);
-    }
+    const current = Number.parseInt(document.getElementById('dice').dataset.number || '1');
+    document.getElementById('dice').setAttribute('class', 'dice show-' + String(7-current));
+    setTimeout(() => {
+        document.getElementById('dice').setAttribute('class', 'dice show-' + String(number));
+    }, 200);
+    setTimeout(() => {
+        const event = new Event('thrown');
+        event.value = number;
+        dice = number;
+        document.getElementById('dice').dispatchEvent(event);
+        document.getElementById('dice').dataset.number = String(number);
+    }, 500);
 }
 
+function clickPawn(pawn) {
+    if (dice) {
+        console.log(pawn);
+        movePawn(pawn, dice);
+        dice = 0;
+    }
+}
