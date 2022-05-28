@@ -325,3 +325,32 @@ function doStep() {
     }
     console.log(color.toUpperCase() + ' throws: ' + steps + ' no moves possible');
 }
+
+let count = 0;
+
+document.getElementById('dicebtn').addEventListener('click', (e) => {
+    count = 0;
+    e.currentTarget.setAttribute('disabled', 'disabled');
+    rollDice();
+});
+
+document.getElementById('dice').addEventListener('thrown', (e) => {
+    console.log(e.value);
+    document.getElementById('dicebtn').removeAttribute('disabled');
+    movePawn('y1', e.value);
+});
+
+function rollDice() {
+    const number = Math.floor((Math.random() * 6) + 1);
+    document.getElementById('dice').setAttribute('class', 'dice show-' + String(number));
+    if (count++ <= 3) {
+        setTimeout(rollDice,200);
+    } else {
+        setTimeout(() => {
+            const event = new Event('thrown');
+            event.value = number;
+            document.getElementById('dice').dispatchEvent(event);
+        }, 500);
+    }
+}
+
