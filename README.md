@@ -10,6 +10,6 @@
 Open index.html file in browser
 
 ### Project team
-- Amy
-- Teun
-- Femke
+- Amy Amytarling28@gmail.com
+- Teun Teunkoreman@gmail.com
+- Femke Femkedeklerk@gmail.com
