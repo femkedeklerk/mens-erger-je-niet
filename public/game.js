@@ -142,10 +142,10 @@ function createBoard() {
     }
 
     // add text
-    addText(250, 370, 'Mens');
-    addText(950, 370, 'erger');
-    addText(250, 850, 'je');
-    addText(950, 850, 'niet');
+    addText(250, 375, 'Mens');
+    addText(950, 375, 'erger');
+    addText(250, 845, 'je');
+    addText(950, 845, 'niet');
 
     // add arrows
     [
@@ -176,6 +176,11 @@ function createBoard() {
         group.appendChild(path);
         boardSvg.appendChild(group);
     });
+
+    addName(150,275, 'name1');
+    addName(1050,275, 'name2');
+    addName(150,1175, 'name0');
+    addName(1050,1175, 'name3');
 }
 
 function addText(x, y, text) {
@@ -185,6 +190,17 @@ function addText(x, y, text) {
     elm.setAttribute('class', 'mensergerjeniet');
     elm.setAttribute('text-anchor', 'middle');
     elm.textContent = text;
+    boardSvg.appendChild(elm);
+}
+
+function addName(x, y, id) {
+    let elm = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    elm.setAttribute('x', x);
+    elm.setAttribute('y', y);
+    elm.setAttribute('class', 'name');
+    elm.setAttribute('text-anchor', 'middle');
+    elm.setAttribute('id', id);
+    // elm.textContent = text;
     boardSvg.appendChild(elm);
 }
 
@@ -279,17 +295,25 @@ function movePawn(key, steps) {
 
 }
 
-const players = ['g', 'r', 'b', 'y'];
+function setActive(color) {
+
+}
+
+const players = ['b', 'y', 'g', 'r' ];
 let player = -1;
 
-document.getElementById('movebutton').addEventListener('click', (e) => {
-    doStep();
-});
+let playernames = [];
 
-document.getElementById('startbutton').addEventListener('click', (e) => {
-    e.target.disabled = 'disabled';
-    play();
-});
+let gamestate;
+
+// document.getElementById('movebutton').addEventListener('click', (e) => {
+//     doStep();
+// });
+
+// document.getElementById('startbutton').addEventListener('click', (e) => {
+//     e.target.disabled = 'disabled';
+//     play();
+// });
 
 function play() {
     doStep();
@@ -365,3 +389,41 @@ function clickPawn(pawn) {
         dice = 0;
     }
 }
+
+// startknop op namen formulier afhandelen
+document.getElementById('startbutton').addEventListener('click', (e) => {
+    e.preventDefault();
+    playernames = [];
+    for (let i = 1; i <= 4; i++) {
+        if (document.getElementById('player' + i.toString()).value) {
+            playernames.push(document.getElementById('player' + i.toString()).value);
+        }
+    }
+    // toon foutmelding als er geen namen zijn ingevuld
+    if (playernames.length < 1) {
+        document.getElementById('names-error').classList.remove('hidden');
+        return;
+    }
+    document.getElementById('names').classList.add('hidden');
+    document.getElementById('names-error').classList.add('hidden');
+
+    // voeg bots toe
+    while (playernames.length < 4) {
+        playernames.push('MejnBot')
+    }
+
+    // hussel spelers
+    playernames.sort(() => 0.5 - Math.random());
+
+    document.getElementById('rules').classList.add('hidden');
+
+    for (let i = 0; i < 4; i++) {
+        document.getElementById('name' + i).textContent = playernames[i];
+    }
+
+    document.getElementById('gameplay').classList.remove('hidden');
+
+    document.getElementById('dicebtn').removeAttribute('disabled');
+    console.log(playernames);
+});
+

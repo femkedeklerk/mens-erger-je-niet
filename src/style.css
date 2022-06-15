@@ -13,6 +13,12 @@
     user-select: none;
 }
 
+.name {
+    font-size: 1.6em;
+    @apply fill-amber-800;
+    @apply font-medium;
+}
+
 .perspective {
     transform:
             scale(0.7)
@@ -28,24 +34,7 @@
 
 .pawn:hover {
     cursor: pointer;
-    stroke-width: 1;
-}
-
-.pawn:hover g {
-    transform: rotate(-5deg);
-}
-
-.pawn-g:hover {
-    fill: #0ee672;
-}
-.pawn-r:hover {
-    fill: #ff0900;
-}
-.pawn-b:hover {
-    fill: #14c4ff;
-}
-.pawn-y:hover {
-    fill: #ffdd00;
+    filter: brightness(0.7);
 }
 
 /* DICE */
@@ -63,8 +52,9 @@
     height: 20px;
     margin: -10px 5px 5px -10px;
     border-radius: 20px;
-    background-color: #f25f5c;
+    /*background-color: #f25f5c;*/
     box-shadow: inset 2px 2px #d90429;
+    @apply bg-amber-700;
 }
 
 .side {
@@ -123,4 +113,8 @@
 .six-5 {
     top: 50%;
     left: 80%;
+}
+
+#rules {
+    background-color: rgb(254 243 199 / .95);
 }
