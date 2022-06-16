@@ -1380,10 +1380,6 @@ select {
   margin-bottom: calc(1.25rem * var(--tw-space-y-reverse));
 }
 
-.justify-self-center {
-  justify-self: center;
-}
-
 .overflow-auto {
   overflow: auto;
 }
@@ -1408,10 +1404,6 @@ select {
   border-top-width: 8px;
 }
 
-.border-t {
-  border-top-width: 1px;
-}
-
 .border-orange-700 {
   --tw-border-opacity: 1;
   border-color: rgb(194 65 12 / var(--tw-border-opacity));
@@ -1431,44 +1423,14 @@ select {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
+.bg-orange-700 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(194 65 12 / var(--tw-bg-opacity));
+}
+
 .bg-amber-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(254 243 199 / var(--tw-bg-opacity));
-}
-
-.bg-gray-200 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(229 231 235 / var(--tw-bg-opacity));
-}
-
-.bg-orange-800 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(154 52 18 / var(--tw-bg-opacity));
-}
-
-.bg-orange-200 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(254 215 170 / var(--tw-bg-opacity));
-}
-
-.bg-orange-100 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 237 213 / var(--tw-bg-opacity));
-}
-
-.bg-amber-200 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(253 230 138 / var(--tw-bg-opacity));
-}
-
-.bg-gray-300 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(209 213 219 / var(--tw-bg-opacity));
-}
-
-.bg-slate-300 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(203 213 225 / var(--tw-bg-opacity));
 }
 
 .bg-slate-200 {
@@ -1476,13 +1438,9 @@ select {
   background-color: rgb(226 232 240 / var(--tw-bg-opacity));
 }
 
-.bg-slate-100 {
+.bg-orange-800 {
   --tw-bg-opacity: 1;
-  background-color: rgb(241 245 249 / var(--tw-bg-opacity));
-}
-
-.fill-amber-600 {
-  fill: #d97706;
+  background-color: rgb(154 52 18 / var(--tw-bg-opacity));
 }
 
 .p-5 {
@@ -1589,9 +1547,21 @@ select {
   transition: transform 200ms;
 }
 
-.pawn:hover {
+.pawn[data-movable=y]:hover {
   cursor: pointer;
   filter: brightness(0.7);
+}
+
+.pawn[data-movable=n]:hover {
+  cursor: not-allowed;
+}
+
+circle {
+  transition: stroke 300ms;
+}
+
+circle.highlight {
+  stroke: #c2410c;
 }
 
 /* DICE */

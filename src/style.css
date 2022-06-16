@@ -32,9 +32,20 @@
     transition: transform 200ms;
 }
 
-.pawn:hover {
+.pawn[data-movable=y]:hover {
     cursor: pointer;
     filter: brightness(0.7);
+}
+.pawn[data-movable=n]:hover {
+    cursor: not-allowed;
+}
+
+circle {
+    transition: stroke 300ms;
+}
+
+circle.highlight {
+    @apply stroke-orange-700;
 }
 
 /* DICE */
