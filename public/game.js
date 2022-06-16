@@ -266,26 +266,23 @@ let game = {
 };
 
 document.getElementById('dicebtn').addEventListener('click', (e) => {
-    e.currentTarget.setAttribute('disabled', 'disabled');
-    rollDice();
+    if (e.currentTarget.dataset.active === 'y') {
+        rollDice();
+    }
 });
 
 function rollDice() {
-    // const number = Math.floor((Math.random() * 6) + 1);
-    let number = Math.floor((Math.random() * 10) + 1);
-    number = number > 6 ? 6 : number;
+    disableDice();
+    const number = Math.floor((Math.random() * 6) + 1);
     const current = Number.parseInt(document.getElementById('dice').dataset.number || '1');
     document.getElementById('dice').setAttribute('class', 'dice show-' + String(7-current));
     setTimeout(() => {
         document.getElementById('dice').setAttribute('class', 'dice show-' + String(number));
     }, 200);
     setTimeout(() => {
-        // const event = new Event('thrown');
-        // event.value = number;
-        // document.getElementById('dice').dispatchEvent(event);
         game.dice = number;
+        document.getElementById('dice').dataset.number = String(number);
         playGame();
-        // document.getElementById('dice').dataset.number = String(number);
     }, 500);
 }
 
@@ -326,6 +323,7 @@ document.getElementById('startbutton').addEventListener('click', () => {
             kicks: 0,
             kicked: 0
         };
+        players[idx].autoplay = name.toLowerCase().endsWith('bot');
     });
 
     // verberg formulier en spelregels
@@ -349,40 +347,58 @@ function playGame() {
             game.activePlayer = game.activePlayer < 3 ? game.activePlayer + 1 : 0;
             // game.activePlayer = 1; //game.activePlayer < 3 ? game.activePlayer + 1 : 0;
             players[game.activePlayer].stats.turns++;
+            setActivePlayer();
+
             console.log(players[game.activePlayer].name + ' moet gooien');
-            document.getElementById('dicebtn').removeAttribute('disabled');
             game.state = 'throw';
             game.throwCount = 0;
+            enableDice();
             break;
         case 'throw':
             game.throwCount++;
             console.log(players[game.activePlayer].name + ' heeft ' + game.dice + ' gegooid');
             // controleer of speler een zet kan doen
-            if (!canMove(players[game.activePlayer].color, game.dice)) {
+            let moves = canMove(players[game.activePlayer].color, game.dice);
+            if (!moves.length) {
                 console.log(players[game.activePlayer].name + ' kan niets doen met deze worp');
                 game.state = 'nextPlayer';
-                return playGame();
+                setTimeout(playGame, 1000);
+                break;
+            }
+            if (players[game.activePlayer].autoplay) {
+                // @todo select better move
+                const pawn = moves.sort(() => 0.5 - Math.random()).pop();
+                positions[pawn.n].o.classList.add('highlight');
+                setTimeout(() => {
+                    movePawn(pawn);
+                }, 1000);
             }
             console.log(players[game.activePlayer].name + ' moet een pion zetten');
+            console.log(moves);
             break;
         case 'moved':
             // @todo check for win
+            if (checkWinner(players[game.activePlayer].color)) {
+                console.log(players[game.activePlayer].name + ' heeft gewonnen!!!');
+                break;
+            }
             // volgende speler als geen 6 en niet 2 maal gegooid
             if ((game.throwCount > 1) || (game.dice !== 6)) {
                 game.state = 'nextPlayer';
-                return playGame();
+                setTimeout(playGame, 1000);
+                break;
             }
             // nogmaals gooien
             console.log(players[game.activePlayer].name + ' moet nog een keer gooien');
-            document.getElementById('dicebtn').removeAttribute('disabled');
             game.state = 'throw';
+            enableDice();
             break;
     }
 }
 
 // controleer of kleur kan zetten
 function canMove(color, dice) {
-    let can = false;
+    let moves = [];
     for (const [, pawn] of Object.entries(pawns)) {
         pawn.o.dataset.movable = '';
     }
@@ -391,12 +407,12 @@ function canMove(color, dice) {
         pawn.n = nextPos(pawn, dice);
         if (pawn.n) {
             pawn.o.dataset.movable = 'y';
-            can = true;
+            moves.push(pawn);
         } else {
             pawn.o.dataset.movable = 'n';
         }
     }
-    return can;
+    return moves;
 }
 
 // bepaal positie waar pion naartoe verplaatst bij worp
@@ -431,7 +447,6 @@ function nextPos(pawn, dice) {
         }
     }
     // voorkom zelf-slag
-    console.log(pos);
     return positions[pos].p !== undefined && positions[pos].p[0] === color ? null : pos;
 }
 
@@ -459,8 +474,6 @@ function movePawn(pawn) {
     } else if (pawn.p[1] === 'f') {
         pawn.s = 40 + Number(pawn.p[2]);
     }
-    console.log('steps = ' + pawn.s);
-
     game.state = 'moved';
     playGame();
 }
@@ -491,3 +504,40 @@ function resetMovable() {
         pawn.o.dataset.movable = '';
     }
 }
+
+document.getElementById('autodice').addEventListener('click', (elm) => {
+    elm.target.dataset.active = elm.target.dataset.active === 'y' ? 'n' : 'y';
+});
+
+function enableDice() {
+    // auto play als bot of als switch aan is
+    if ((players[game.activePlayer].autoplay) || (document.getElementById('autodice').dataset.active === 'y')) {
+        setTimeout(rollDice, 1000);
+    } else {
+        document.getElementById('dicebtn').dataset.active = 'y';
+    }
+}
+
+function disableDice() {
+    document.getElementById('dicebtn').dataset.active = 'n';
+}
+
+function setActivePlayer() {
+    const elm = document.getElementById('activeplayer');
+    if (game.activePlayer < 0) {
+        elm.textContent = '';
+    } else {
+        elm.textContent = players[game.activePlayer].name;
+        elm.dataset.color = players[game.activePlayer].color;
+    }
+}
+
+function checkWinner(color) {
+    for (let i = 1; i <= 4; i++) {
+        if ((pawns[color + i.toString()].p === undefined) || (pawns[color + i.toString()].p[1] !== 'f')) {
+            return false;
+        }
+    }
+    return true;
+}
+

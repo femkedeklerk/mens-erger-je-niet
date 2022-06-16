@@ -34,18 +34,20 @@
 
 .pawn[data-movable=y]:hover {
     cursor: pointer;
-    filter: brightness(0.7);
+    /*filter: brightness(0.7);*/
+    @apply stroke-orange-600;
 }
 .pawn[data-movable=n]:hover {
     cursor: not-allowed;
 }
 
-circle {
-    transition: stroke 300ms;
+#board > circle {
+    transition: 300ms;
 }
 
 circle.highlight {
-    @apply stroke-orange-700;
+    @apply stroke-orange-600;
+    stroke-width: 7;
 }
 
 /* DICE */
@@ -126,6 +128,31 @@ circle.highlight {
     left: 80%;
 }
 
+#autodice[data-active=y] {
+    @apply bg-amber-700;
+}
+#autodice[data-active=y] > span {
+    @apply translate-x-5;
+}
+
 #rules {
     background-color: rgb(254 243 199 / .95);
 }
+
+#activeplayer[data-color=g] { color: hsl(148, 89%, 26%); }
+#activeplayer[data-color=r] { color: hsl(2, 76%, 32%); }
+#activeplayer[data-color=b] { color: hsl(195, 66%, 33%); }
+#activeplayer[data-color=y] { color: hsl(52deg 100% 35%); }
+
+/*
+x {
+    color: #077d3f;
+    color: #0cc964;
+    color: #db251f;
+    color: #ff1008;
+    color: #0f8fb8;
+    color: #12afe3;
+    color: #dec312;
+    color: #ffdf0d;
+}
+*/

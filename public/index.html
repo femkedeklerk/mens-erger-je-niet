@@ -32,7 +32,7 @@
                 </div>
             </main>
             <aside class="w-64 bg-slate-200 max-h-screen flex flex-col border-8 border-orange-700 border-l-0">
-                <div id="names" class="mt-8 mx-4 space-y-5">
+                <div id="names" class="mt-8 mx-4 space-y-5 flex-grow">
                     <div>
                         <label for="player1" class="block font-bold text-orange-800">Speler 1</label>
                         <div class="mt-1">
@@ -64,11 +64,10 @@
                         Vul minimaal 1 naam in
                     </div>
                 </div>
-                <div id="gameplay" class="mt-8 mx-4 hidden">
-                    <div class="font-medium"><span class="font-bold text-orange-800">Teun met de lange naam</span> moet gooien</div>
+                <div id="gameplay" class="mt-8 mx-4 hidden flex-grow">
                 </div>
-                <div class="mt-auto aspect-square flex justify-center border-t-8 border-orange-700 bg-slate-200">
-                    <button id="dicebtn" class="p-10 w-full flex justify-center" disabled>
+                <div class="aspect-square flex justify-center border-t-8 border-orange-700 bg-slate-200 relative flex-grow-0">
+                    <div id="dicebtn" class="p-10 w-full flex justify-center" data-active="n">
                         <div id="dice" class="dice" data-number="1">
                             <div id="dice-one-side-one" class='side one'>
                                 <div class="dot one-1"></div>
@@ -104,7 +103,22 @@
                                 <div class="dot six-6"></div>
                             </div>
                         </div>
-                    </button>
+                    </div>
+                    <!-- playername -->
+                    <div class="absolute top-5 w-full flex justify-center">
+                        <span id="activeplayer" class="text-xl font-medium"></span>
+                    </div>
+                    <!-- switch -->
+                    <div class="absolute bottom-4 w-full flex justify-center">
+                        <div class="flex items-center">
+                            <div id="autodice" data-active="n" class="bg-slate-400 relative inline-flex flex-shrink-0 h-5 w-10 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200">
+                                <span aria-hidden="true" class="translate-x-0 pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"></span>
+                            </div>
+                            <span class="ml-3" id="annual-billing-label">
+                                <span class="text-sm font-medium text-slate-700">automatisch dobbelen</span>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </aside>
         </div>
