@@ -121,8 +121,6 @@ const players = [
 
 const boardSvg = document.getElementById('board');
 
-let dice = 0;
-
 createBoard();
 addPawns();
 
@@ -258,69 +256,6 @@ function addPawns() {
     }
 }
 
-function XmovePawn(key, steps) {
-    const pawn = pawns[key];
-    const color = key[0];
-    if (pawn === undefined) {
-        return false;
-    }
-    let newpos = null;
-    // place pawn on board
-    if (pawn.p[1] === 'h') {
-        if (steps !== 6) {
-            return false;
-        }
-        newpos = start[color];
-        pawn.s = 1;
-    }
-    // remove pawn from board
-    else if (steps === -1) {
-        for (let i = 1; i <= 4; i++) {
-             if (positions[color + 'h' + String(i)].p === undefined) {
-                 newpos = color + 'h' + String(i);
-                 pawn.s = 0;
-                 break;
-             }
-        }
-    }
-    // move pawn forward
-    else if (1 <= steps <= 6) {
-        newpos = pawn.p + steps;
-        pawn.s += steps;
-    }
-
-    // walk around
-    if (newpos > 40) {
-        newpos -= 40;
-    }
-
-    // bring to finish
-    if (pawn.s > 40) {
-        let fpos = pawn.s - 40;
-        if (fpos > 4) {
-            fpos = 4 - (fpos - 4);
-        }
-        newpos = color + 'f' + String(fpos);
-    }
-
-
-    if (newpos !== null) {
-        // check if position is used and handle it
-        if (positions[newpos].p !== undefined) {
-            movePawn(positions[newpos].p, -1);
-        }
-
-        delete positions[pawn.p].p;
-        positions[newpos].p = key;
-        pawn.p = newpos;
-
-        pawns[key]['o'].setAttribute('transform', 'translate(' +
-            positions[pawn.p]['x'] + ',' +
-            positions[pawn.p]['y'] + '),rotate(15)');
-    }
-
-}
-
 let player = -1;
 
 let game = {
@@ -330,67 +265,10 @@ let game = {
     throwCount: 0
 };
 
-// document.getElementById('movebutton').addEventListener('click', (e) => {
-//     doStep();
-// });
-
-// document.getElementById('startbutton').addEventListener('click', (e) => {
-//     e.target.disabled = 'disabled';
-//     play();
-// });
-
-/*
-function autoplay() {
-    doStep();
-    setTimeout(() => {
-        autoplay();
-    }, 100);
-}
-*/
-
-function doStep() {
-    player = player === 3 ? 0 : player + 1;
-    const color = players[player].color;
-    let steps = 1 + Math.floor(Math.random() * 6);
-    let pawn;
-    if (steps === 6) {
-        for (let i = 4; i >= 1; i--) {
-            if (pawns[color + String(i)].s === 0) {
-                pawn = color + String(i);
-            }
-        }
-        if (pawn !== undefined) {
-            console.log(color.toUpperCase() + ' throws: 6 and puts pawn ' + pawn.toUpperCase() + ' on board');
-            movePawn(pawn, steps);
-            steps = 1 + Math.floor(Math.random() * 6);
-        }
-    }
-    if (pawn === undefined) {
-        for (let i = 1; i <= 4; i++) {
-            if ((pawns[color + String(i)].s > 0) && (pawns[color + String(i)].s <= 40)) {
-                pawn = color + String(i);
-                break;
-            }
-        }
-    }
-    if (pawn !== undefined) {
-        console.log(color.toUpperCase() + ' throws: ' + steps + ' and move pawn ' + pawn.toUpperCase() + ' forward');
-        movePawn(pawn, steps);
-        return;
-    }
-    console.log(color.toUpperCase() + ' throws: ' + steps + ' no moves possible');
-}
-
 document.getElementById('dicebtn').addEventListener('click', (e) => {
     e.currentTarget.setAttribute('disabled', 'disabled');
     rollDice();
 });
-
-// document.getElementById('dice').addEventListener('thrown', (e) => {
-//     console.log(e.value);
-//     document.getElementById('dicebtn').removeAttribute('disabled');
-//     // movePawn('y1', e.value);
-// });
 
 function rollDice() {
     // const number = Math.floor((Math.random() * 6) + 1);
@@ -411,42 +289,34 @@ function rollDice() {
     }, 500);
 }
 
-function clickPawn(pawn) {
-    if (dice) {
-        console.log(pawn);
-        movePawn(pawn, dice);
-        dice = 0;
-    }
-}
-
 // startknop op namen formulier afhandelen
 document.getElementById('startbutton').addEventListener('click', () => {
 
     // verzamel namen
-    let playernames = [];
+    let playerNames = [];
     document.querySelectorAll('#names input').forEach((obj) => {
         if (obj.value.length) {
-            playernames.push(obj.value)
+            playerNames.push(obj.value)
         }
     });
 
     // toon error
-    if (playernames.length < 1) {
+    if (playerNames.length < 1) {
         document.getElementById('names-error').classList.remove('hidden');
         return;
     }
     document.getElementById('names-error').classList.add('hidden');
 
     // voeg bots toe
-    while (playernames.length < 4) {
-        playernames.push('MejnBot')
+    while (playerNames.length < 4) {
+        playerNames.push('MejnBot')
     }
 
     // hussel spelers
-    playernames.sort(() => 0.5 - Math.random());
+    playerNames.sort(() => 0.5 - Math.random());
 
     // zet spelers op bord
-    playernames.forEach((name, idx) => {
+    playerNames.forEach((name, idx) => {
         players[idx].name = name;
         document.getElementById('name-' + players[idx].color).textContent = name;
         players[idx].stats = {
@@ -458,7 +328,7 @@ document.getElementById('startbutton').addEventListener('click', () => {
         };
     });
 
-    // verberg naamformulier en spelregels
+    // verberg formulier en spelregels
     document.getElementById('names').classList.add('hidden');
     document.getElementById('rules').classList.add('hidden');
 
@@ -513,7 +383,7 @@ function playGame() {
 // controleer of kleur kan zetten
 function canMove(color, dice) {
     let can = false;
-    for (const [key, pawn] of Object.entries(pawns)) {
+    for (const [, pawn] of Object.entries(pawns)) {
         pawn.o.dataset.movable = '';
     }
     for (let i = 1; i <= 4; i++) {
@@ -548,7 +418,7 @@ function nextPos(pawn, dice) {
         return (positions[pos] !== undefined) && (positions[pos].p === undefined) ? pos : null;
     }
 
-    // pion naar startpositie of verpaatsen op bord?
+    // pion naar startpositie of verplaatsen op bord?
     if (pawn.s === 0) {
         if (dice < 6) {
             return null;
@@ -579,7 +449,7 @@ function movePawn(pawn) {
     pawn.o.setAttribute('transform', 'translate(' +
         positions[pawn.p].x + ',' +
         positions[pawn.p].y + '),rotate(15)');
-    for (const [key, pawn] of Object.entries(pawns)) {
+    for (const [, pawn] of Object.entries(pawns)) {
         delete pawn.n;
     }
     if (pawn.s === 0) {
@@ -602,11 +472,11 @@ function returnPawn(pawnId) {
     for (let i = 1; i <= 4; i++) {
         if (positions[color + 'h' + i.toString()].p === undefined) {
             console.log('zet #' + pawnId + ' terug in thuishonk');
-            const newpos = color + 'h' + i.toString();
+            const newPos = color + 'h' + i.toString();
             delete positions[pawn.p].p;
-            positions[newpos].p = pawnId;
+            positions[newPos].p = pawnId;
             pawn.s = 0;
-            pawn.p = newpos;
+            pawn.p = newPos;
             pawn.o.setAttribute('transform', 'translate(' +
                 positions[pawn.p].x + ',' +
                 positions[pawn.p].y + '),rotate(15)');
